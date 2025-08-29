@@ -127,13 +127,22 @@ const getAnimalsByBox = async (
     const {topRight, bottomLeft} = req.query;
 
     res.json(
-      await animalModel.find({
-        location: {
-          $geoWithin: {
-            $box: [topRight.split(','), bottomLeft.split(',')],
+      await animalModel
+        .find({
+          location: {
+            $geoWithin: {
+              $box: [topRight.split(','), bottomLeft.split(',')],
+            },
           },
-        },
-      }),
+        })
+        .populate({
+          path: 'species',
+          select: '-__v',
+          populate: {
+            path: 'category',
+            select: '-__v',
+          },
+        }),
     );
   } catch (error) {
     next(new CustomError((error as Error).message, 500));

@@ -67,7 +67,7 @@ const postSpecies = (
   return new Promise((resolve, reject) => {
     request(app)
       .post('/api/v1/species')
-      .send({species_name, category, location})
+      .send({species_name, category, location, image: 'imageUrl'})
       .expect(201, (err, response) => {
         if (err) {
           reject(err);

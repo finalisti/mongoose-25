@@ -82,6 +82,7 @@ const postAnimal = (
           reject(err);
         } else {
           const message: string = response.body.message;
+          expect(message).toBe('Animal created');
           const data: TestAnimal = response.body.data;
           expect(data._id).toBeDefined();
           expect(data.animal_name).toBe(animal_name);
@@ -110,6 +111,7 @@ const putAnimal = (
           reject(err);
         } else {
           const message: string = response.body.message;
+          expect(message).toBe('Animal updated');
           const data: TestAnimal = response.body.data;
           expect(data._id).toBeDefined();
           expect(data.animal_name).toBe(animal_name);
