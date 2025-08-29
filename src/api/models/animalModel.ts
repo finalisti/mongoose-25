@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import {Animal} from '../../types/Animal';
+import {Animal, AnimalModel} from '../../types/Animal';
 
 const animalSchema = new mongoose.Schema<Animal>({
   animal_name: {type: String, required: true, unique: true, minlength: 2},
@@ -27,4 +27,31 @@ const animalSchema = new mongoose.Schema<Animal>({
   },
 });
 
-export default mongoose.model<Animal>('Animal', animalSchema);
+animalSchema.statics.findBySpecies = function (species_name: string) {
+  return this.aggregate([
+    {
+      $lookup: {
+        from: 'species',
+        localField: 'species',
+        foreignField: '_id',
+        as: 'species_info',
+      },
+    },
+    {
+      $unwind: '$species_info',
+    },
+    {
+      $match: {
+        'species_info.species_name': species_name,
+      },
+    },
+    {
+      $project: {
+        __v: 0,
+        'species_info.__v': 0,
+      },
+    },
+  ]);
+};
+
+export default mongoose.model<Animal, AnimalModel>('Animal', animalSchema);

@@ -118,6 +118,18 @@ const getAnimalsByBox = async (
   }
 };
 
+const getBySpeciesName = async (
+  req: Request<{species_name: string}>,
+  res: Response<Animal[]>,
+  next: NextFunction,
+) => {
+  try {
+    res.json(await animalModel.findBySpecies(req.params.species_name));
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+};
+
 export {
   postAnimal,
   getAnimals,
@@ -125,4 +137,5 @@ export {
   putAnimal,
   deleteAnimal,
   getAnimalsByBox,
+  getBySpeciesName,
 };
