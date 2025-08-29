@@ -32,7 +32,7 @@ const getCategories = async (
   next: NextFunction,
 ) => {
   try {
-    res.json(await categoryModel.find());
+    res.json(await categoryModel.find().select('-__v'));
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
   }
@@ -44,7 +44,7 @@ const getCategory = async (
   next: NextFunction,
 ) => {
   try {
-    const category = await categoryModel.findById(req.params.id);
+    const category = await categoryModel.findById(req.params.id).select('-__v');
 
     if (!category) {
       next(new CustomError('Category not found', 404));

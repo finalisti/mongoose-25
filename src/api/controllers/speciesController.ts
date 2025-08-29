@@ -33,7 +33,7 @@ const getSpecies = async (
   next: NextFunction,
 ) => {
   try {
-    res.json(await speciesModel.find());
+    res.json(await speciesModel.find().select('-__v'));
   } catch (error) {
     next(new CustomError((error as Error).message, 500));
   }
@@ -45,7 +45,7 @@ const getSpeciesById = async (
   next: NextFunction,
 ) => {
   try {
-    const species = await speciesModel.findById(req.params.id);
+    const species = await speciesModel.findById(req.params.id).select('-__v');
     if (!species) {
       return next(new CustomError('Species not found', 404));
     }

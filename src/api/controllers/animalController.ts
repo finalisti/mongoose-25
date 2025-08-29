@@ -125,6 +125,14 @@ const getAnimalsByBox = async (
 ) => {
   try {
     const {topRight, bottomLeft} = req.query;
+    if (!topRight || !bottomLeft) {
+      return next(
+        new CustomError(
+          'Missing required query parameters: topRight and bottomLeft',
+          400,
+        ),
+      );
+    }
 
     res.json(
       await animalModel
