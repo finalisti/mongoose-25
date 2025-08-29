@@ -1,5 +1,6 @@
 import {NextFunction, Request, Response} from 'express';
 import {Species} from '../../types/Species';
+import {Polygon} from 'geojson';
 import {MessageResponse} from '../../types/Messages';
 import speciesModel from '../models/speciesModel';
 import CustomError from '../../classes/CustomError';
@@ -96,4 +97,26 @@ const deleteSpecies = async (
   }
 };
 
-export {postSpecies, getSpecies, getSpeciesById, putSpecies, deleteSpecies};
+const findByArea = async (
+  req: Request<{polygon: Polygon}>,
+  res: Response<Species[]>,
+  next: NextFunction,
+) => {
+  try {
+    if (!req.body || !req.body.polygon) {
+      return next(new CustomError('Missing polygon in request body', 400));
+    }
+    res.json(await speciesModel.findByArea(req.body.polygon));
+  } catch (error) {
+    next(new CustomError((error as Error).message, 500));
+  }
+};
+
+export {
+  postSpecies,
+  getSpecies,
+  getSpeciesById,
+  putSpecies,
+  deleteSpecies,
+  findByArea,
+};
